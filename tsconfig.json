@@ -1,0 +1,5 @@
+{
+  // https://nuxt.com/docs/guide/concepts/typescript
+  // 修改文件之后, 结束项目然后运行 npm run generate 重新生成依赖文件
+  "extends": "./.nuxt/tsconfig.json"
+}
