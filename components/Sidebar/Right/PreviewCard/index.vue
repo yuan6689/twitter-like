@@ -1,8 +1,10 @@
 <template>
-  <div class="m-2 border bg-gray-50">
-    <h1>
+  <div class="mt-3 m-2 border bg-gray-50 divide-y dark:divide-gray-700 overflow-hidden rounded-2xl dark:bg-dim-700" :class="twitterBorderColor">
+    <h1 class="p-3 text-xl font-extrabold text-gray-900 dark:text-white">
       {{ props.title }}
     </h1>
+    <slot></slot>
+    <div class="flex text-blue-400 cursor-pointer hover:bg-gray-100 p-3 dark:hover:bg-dim-300" :class="defaultTransition">Show more</div>
   </div>
 </template>
 
@@ -14,5 +16,5 @@ const props = defineProps({
   }
 })
 
-const { defaultTransition , twitterBorderColor } = useTailwindConfig();
+const { defaultTransition, twitterBorderColor } = useTailwindConfig();
 </script>

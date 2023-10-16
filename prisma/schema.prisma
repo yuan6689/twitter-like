@@ -1,0 +1,86 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider     = "mongodb"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+model User {
+  id           String  @id @default(auto()) @map("_id") @db.ObjectId
+  email        String
+  name         String?
+  username     String  @unique
+  password     String
+  profileImage String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Refresh token
+  refreshToken RefreshToken[]
+
+  // // Tweet
+  tweet Tweet[]
+
+  // // MediaFiles
+  mediaFiles MediaFile[]
+}
+
+model RefreshToken {
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  token String @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId String @db.ObjectId
+  user   User   @relation(fields: [userId], references: [id])
+}
+
+model Tweet {
+  id   String @id @default(auto()) @map("_id") @db.ObjectId
+  text String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Author
+  author   User   @relation(fields: [authorId], references: [id])
+  authorId String @db.ObjectId
+
+  // 评论?
+  replyToId String? @db.ObjectId
+  replyTo   Tweet?  @relation("replies", fields: [replyToId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  replies   Tweet[] @relation("replies")
+  // fields 是编程语言中的一个术语，表示数据模型中的字段或属性。在数据库设计、数据结构和对象模型等领域中，fields 用于定义数据模型中的字段，这些字段描述了数据的属性、特征和信息。
+
+  // 例如，在关系型数据库中，表可以由多个字段组成，每个字段都有自己的数据类型、约束和索引等属性。在面向对象编程中，类可以由多个字段组成，每个字段都有自己的数据类型、访问修饰符和其他属性。
+
+  // 在许多编程语言中，fields 通常是一个属性或字段名称的字符串，用于表示数据模型中的特定属性。例如，在 JavaScript 中，可以使用对象字面量或构造函数来定义一个数据模型，其中每个属性都是一个字段。
+
+  // MediaFiles
+  mediaFiles MediaFile[]
+}
+
+model MediaFile {
+  id               String @id @default(auto()) @map("_id") @db.ObjectId
+  url              String
+  providerPublicId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // User
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @db.ObjectId
+
+  // Tweets
+  tweet   Tweet?  @relation(fields: [tweetId], references: [id])
+  tweetId String? @db.ObjectId
+}
